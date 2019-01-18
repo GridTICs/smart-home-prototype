@@ -3,9 +3,10 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include "Adafruit_SHT31.h"
+#define DEBUG 0
 
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
-
+void startEthernet();
 int ledPinRed = 3;                                      // LED connected to digital pin 3
 int ledPinWhite = 5;
 int ledPinYellow = 6;
@@ -69,8 +70,12 @@ void loop() {
   //Serial.println();
   
   if (! isnan(temperature)) {  // check if 'is not a number'
-    //Serial.print("Temp *C = "); 
-    //Serial.println(temperature);
+    if(DEBUG){
+      Serial.print("Temp *C = "); 
+      Serial.println(temperature);  
+      
+     }
+    
   } else { 
     Serial.println("Failed to read temperature");
   }
@@ -152,7 +157,7 @@ byte BH1750_Read(int address){
 }
 
 void updateThingSpeak(String tsData){
-  if (client.connect(thingSpeakAddress, 80)){
+  if (client.connect(thingSpeakAddress, port)){
     Serial.println(Ethernet.localIP());
     client.print("POST /update HTTP/1.1\n");
     client.print("Host: api.thingspeak.com\n");
