@@ -4,6 +4,7 @@
 #include <Ethernet.h>
 #include "Adafruit_SHT31.h"
 
+#define DEBUG 0
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
 int ledPinRed = 3;                                      // LED connected to digital pin 3
@@ -69,7 +70,9 @@ void loop() {
   //Serial.println();
   
   if (! isnan(temperature)) {  // check if 'is not a number'
-    mySerialPrintData ("Temperatura = ", temperature);
+    if (DEBUG){
+      mySerialPrintData ("Temperatura = ", temperature);
+    }
     //Serial.print("Temp *C = "); 
     //Serial.println(temperature);
   } else { 
@@ -77,7 +80,9 @@ void loop() {
   }
   
   if (! isnan(humidity)) {                                // check if 'is not a number'
-    mySerialPrintData ("Humidity = ", humidity);
+    if (DEBUG){
+      mySerialPrintData ("Humidity = ", humidity);
+    }
     //Serial.print("Hum. % = ");
     //Serial.println(humidity);
   } else { 
@@ -98,6 +103,7 @@ void loop() {
     if (illuminance < 0){
       Serial.print("> 65535");
     } else {
+      mySerialPrintData ("Illuminance: ", illuminance);
       //Serial.print("Illuminance : ");
       //Serial.print((int) illuminance,DEC); 
     }
@@ -127,7 +133,9 @@ void loop() {
   }
     
   // Check if Arduino Ethernet needs to be restarted
-  if (failedCounter > 3 ) {startEthernet();}
+  if (failedCounter > 3 ) {
+    startEthernet();
+  }
   
   lastConnected = client.connected();
   
