@@ -5,7 +5,7 @@
 #include "Adafruit_SHT31.h"
 
 #define DEBUG 0
-#define DEBUG_RED 1
+#define DEBUG_RED 0
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
 int ledPinRed = 3;                                      // LED connected to digital pin 3
@@ -24,7 +24,7 @@ String writeAPIKey = "1YF1AO4UQ2BGALRL";
 byte mac[] = { 0xF0, 0x5A, 0x09, 0x58, 0x56, 0x8E };
 byte thingSpeakAddress[] = {184, 106, 153, 149};                         //ip address of server.
 int port = 80 ;// a traves de proxy utn IP 192.168.16.8 puerto 8080
-const int updateThingSpeakInterval = 16 * 1000; // Time interval in milliseconds to update ThingSpeak (number of seconds * 1000 = interval)
+const int updateThingSpeakInterval = 60 * 1000; // Time interval in milliseconds to update ThingSpeak (number of seconds * 1000 = interval)
 
 IPAddress ip(192,168,1,44);
 
