@@ -141,7 +141,9 @@ void loop() {
   {
     connectToThingSpeak();
   }
-  
+  if (millis() < lastConnectionTime) {                 //Este if nos salvo de la excepcion de que ocurra un overflow de millis() 
+    lastConnectionTime = 0;
+  }
   if(client.connected() && (millis() - lastConnectionTime > updateThingSpeakInterval)){
     if (DEBUG_RED) {
      Serial.println ("ENTRO AL IF UPDATE");
