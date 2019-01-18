@@ -6,10 +6,10 @@
 
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
-int ledPinRed = 3;                                      // LED connected to digital pin 3
-int ledPinWhite = 5;
-int ledPinYellow = 6;
-int ledPinGreen = 9;
+int ledPinRed = 14;                                      // LED connected to digital pin 3
+int ledPinWhite = 15;
+int ledPinYellow = 16;
+int ledPinGreen = 19;
 
 int analogPin = 10;                                     // potentiometer connected to analog pin 10
 int potentiometerValue = 0;                             // variable to store the read value
