@@ -5,6 +5,7 @@
 #include "Adafruit_SHT31.h"
 
 #define DEBUG 0
+#define DEBUG_RED 1
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
 int ledPinRed = 3;                                      // LED connected to digital pin 3
@@ -103,11 +104,12 @@ void loop() {
     if (illuminance < 0){
       Serial.print("> 65535");
     } else {
+      if (DEBUG){
       mySerialPrintData ("Illuminance: ", illuminance);
       //Serial.print("Illuminance : ");
       //Serial.print((int) illuminance,DEC); 
+      }
     }
-    
     //Serial.println(" lx");
   }
   
@@ -126,7 +128,9 @@ void loop() {
     Serial.println();
     client.stop();
   }
-    
+   if (DEBUG_RED) {
+    Serial.println(lastConnectionTime);
+  }  
   // Update ThingSpeak
   if(!client.connected() && (millis() - lastConnectionTime > updateThingSpeakInterval)){
     updateThingSpeak("field1="+temperatureString+"&field2="+humidityString+"&field3="+iluminanceString+"&field4="+potentiometerString+"&field5="+potentiometerString+"&field6="+potentiometerString+"&field7="+potentiometerString);
@@ -138,7 +142,9 @@ void loop() {
   }
   
   lastConnected = client.connected();
-  
+  if (DEBUG_RED) {
+    Serial.println(lastConnected);
+  }
 } //void loop ()
 
 void BH1750_Init(int address){
@@ -174,7 +180,7 @@ void updateThingSpeak(String tsData){
     client.print("\n\n");
     client.print(tsData);
     lastConnectionTime = millis();
-    
+   
     if (client.connected()){
       Serial.println("Connecting to ThingSpeak...");
       Serial.println();
