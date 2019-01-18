@@ -69,6 +69,7 @@ void loop() {
   //Serial.println();
   
   if (! isnan(temperature)) {  // check if 'is not a number'
+    mySerialPrintData ("Temperatura = ", temperature);
     //Serial.print("Temp *C = "); 
     //Serial.println(temperature);
   } else { 
@@ -76,6 +77,7 @@ void loop() {
   }
   
   if (! isnan(humidity)) {                                // check if 'is not a number'
+    mySerialPrintData ("Humidity = ", humidity);
     //Serial.print("Hum. % = ");
     //Serial.println(humidity);
   } else { 
@@ -199,4 +201,9 @@ void startEthernet(){
   }
   
   delay(1000);
+}
+
+void mySerialPrintData (String message, float value) {
+    Serial.print(message);
+    Serial.println(value);
 }
