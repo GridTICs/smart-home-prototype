@@ -42,7 +42,10 @@ void setup() {
   
   Wire.begin();
   BH1750_Init(BH1750_address);
-  Serial.println("SHT31 test");
+  if (DEBUG){
+    Serial.println("SHT31 test");  
+  }
+  
   
   if (! sht31.begin(0x44)) {   // i2c Addresse sht31 sensor. If pin ADR is in LOW i2c address = 0x44. And pin ADR is in HIGH alternate i2c address = 0x45.
     Serial.println("Couldn't find SHT31");
@@ -72,7 +75,7 @@ void loop() {
   
   if (! isnan(temperature)) {  // check if 'is not a number'
     if (DEBUG){
-      mySerialPrintData ("Temperatura = ", temperature);
+      mySerialPrintDataF ("Temperatura = ", temperature);
     }
     //Serial.print("Temp *C = "); 
     //Serial.println(temperature);
@@ -82,7 +85,7 @@ void loop() {
   
   if (! isnan(humidity)) {                                // check if 'is not a number'
     if (DEBUG){
-      mySerialPrintData ("Humidity = ", humidity);
+      mySerialPrintDataF ("Humidity = ", humidity);
     }
     //Serial.print("Hum. % = ");
     //Serial.println(humidity);
@@ -105,7 +108,7 @@ void loop() {
       Serial.print("> 65535");
     } else {
       if (DEBUG){
-      mySerialPrintData ("Illuminance: ", illuminance);
+      mySerialPrintDataF ("Illuminance: ", illuminance);
       //Serial.print("Illuminance : ");
       //Serial.print((int) illuminance,DEC); 
       }
@@ -128,14 +131,29 @@ void loop() {
     Serial.println();
     client.stop();
   }
-   if (DEBUG_RED) {
-    Serial.println(lastConnectionTime);
-  }  
-  // Update ThingSpeak
-  if(!client.connected() && (millis() - lastConnectionTime > updateThingSpeakInterval)){
-    updateThingSpeak("field1="+temperatureString+"&field2="+humidityString+"&field3="+iluminanceString+"&field4="+potentiometerString+"&field5="+potentiometerString+"&field6="+potentiometerString+"&field7="+potentiometerString);
+  if (DEBUG_RED) {
+     mySerialPrintDataI ("En If que contien AND lastConnected = ", lastConnected);
+     Serial.println (client.connected());
   }
-    
+  //MOSTRAR CLIENT.CONNECTED H LASTCONNECTED 
+  // Update ThingSpeak
+  if(!client.connected())
+  {
+    connectToThingSpeak();
+  }
+  
+  if(client.connected() && (millis() - lastConnectionTime > updateThingSpeakInterval)){
+    if (DEBUG_RED) {
+     Serial.println ("ENTRO AL IF UPDATE");
+  }
+    sendToThingSpeak("field1="+temperatureString+"&field2="+humidityString+"&field3="+iluminanceString+"&field4="+potentiometerString+"&field5="+potentiometerString+"&field6="+potentiometerString+"&field7="+potentiometerString);
+  }
+   if (DEBUG_RED) {
+    mySerialPrintDataL ("Valor lastConnectionTime luego Update ", lastConnectionTime);
+    mySerialPrintDataL ("Valor millis luego Update ", millis());
+    long diferencia = millis() - lastConnectionTime;
+    mySerialPrintDataL ("Valor diferencia luego Update ", diferencia);
+  } 
   // Check if Arduino Ethernet needs to be restarted
   if (failedCounter > 3 ) {
     startEthernet();
@@ -143,8 +161,11 @@ void loop() {
   
   lastConnected = client.connected();
   if (DEBUG_RED) {
-    Serial.println(lastConnected);
+     mySerialPrintDataI ("lastConnected = ", lastConnected);
+     Serial.println (client.connected());
+     delay (2000);
   }
+  
 } //void loop ()
 
 void BH1750_Init(int address){
@@ -166,9 +187,7 @@ byte BH1750_Read(int address){
   Wire.endTransmission();  
   return i;
 }
-
-void updateThingSpeak(String tsData){
-  if (client.connect(thingSpeakAddress, port)){
+void sendToThingSpeak(String tsData){
     Serial.println(Ethernet.localIP());
     client.print("POST /update HTTP/1.1\n");
     client.print("Host: api.thingspeak.com\n");
@@ -180,6 +199,22 @@ void updateThingSpeak(String tsData){
     client.print("\n\n");
     client.print(tsData);
     lastConnectionTime = millis();
+   
+} // sendToThingSpeak
+
+void connectToThingSpeak(){//String tsData){
+  if (client.connect(thingSpeakAddress, port)){
+//    Serial.println(Ethernet.localIP());
+//    client.print("POST /update HTTP/1.1\n");
+//    client.print("Host: api.thingspeak.com\n");
+//    client.print("Connection: close\n");
+//    client.print("X-THINGSPEAKAPIKEY: "+writeAPIKey+"\n");
+//    client.print("Content-Type: application/x-www-form-urlencoded\n");
+//    client.print("Content-Length: ");
+//    client.print(tsData.length());
+//    client.print("\n\n");
+//    client.print(tsData);
+//    lastConnectionTime = millis();
    
     if (client.connected()){
       Serial.println("Connecting to ThingSpeak...");
@@ -197,7 +232,7 @@ void updateThingSpeak(String tsData){
      Serial.println();
      lastConnectionTime = millis();
   }
-} // updateThingSpeak
+} // connectToThingSpeak
 
 void startEthernet(){
   client.stop();
@@ -217,7 +252,17 @@ void startEthernet(){
   delay(1000);
 }
 
-void mySerialPrintData (String message, float value) {
+void mySerialPrintDataF (String message, float value) {
+    Serial.print(message);
+    Serial.println(value);
+}
+
+void mySerialPrintDataL (String message, long value) {
+    Serial.print(message);
+    Serial.println(value);
+}
+
+void mySerialPrintDataI (String message, int value) {
     Serial.print(message);
     Serial.println(value);
 }
