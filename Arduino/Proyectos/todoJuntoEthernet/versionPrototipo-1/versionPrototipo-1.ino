@@ -5,7 +5,7 @@
 #include "Adafruit_SHT31.h"
 
 #define DEBUG 0
-#define DEBUG_RED 1
+#define DEBUG_RED 0
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
 int ledPinRed = 3;                                      // LED connected to digital pin 3
@@ -137,11 +137,10 @@ void loop() {
   }
   //MOSTRAR CLIENT.CONNECTED H LASTCONNECTED 
   // Update ThingSpeak
-  if(!client.connected())
-  {
+  if(!client.connected()){
     connectToThingSpeak();
   }
-  if (millis() < lastConnectionTime) {                 //Este if nos salvo de la excepcion de que ocurra un overflow de millis() 
+  if (millis() < lastConnectionTime) {                 //Este if nos salva de la excepcion de que ocurra un overflow de millis() 
     lastConnectionTime = 0;
   }
   if(client.connected() && (millis() - lastConnectionTime > updateThingSpeakInterval)){
