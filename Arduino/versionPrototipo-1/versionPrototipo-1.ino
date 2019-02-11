@@ -2,7 +2,11 @@
 #include <Wire.h>
 #include <SPI.h>
 #include <Ethernet.h>
+
+#include <Arduino.h>
+
 #include "Adafruit_SHT31.h"
+#include "credentials.h"
 
 #define DEBUG 0
 #define DEBUG_RED 0
@@ -19,7 +23,7 @@ int potentiometerValue = 0;                             // variable to store the
 int BH1750_address = 0x23;                              // i2c Addresse light sensor
 byte buff[2];
 
-String writeAPIKey = "1YF1AO4UQ2BGALRL";
+String writeAPIKey =  THINGSPEAK_WRITE_API_KEY;
 
 byte mac[] = { 0xF0, 0x5A, 0x09, 0x58, 0x56, 0x8E };
 byte thingSpeakAddress[] = {184, 106, 153, 149};                         //ip address of server.
