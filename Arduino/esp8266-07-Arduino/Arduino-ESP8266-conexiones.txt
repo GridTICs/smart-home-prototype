@@ -1,4 +1,4 @@
-Arduino Mega		ESP8266-07
+Arduino Mega			ESP8266-07
 3V3 			-->	RST		(PIN 1)
 3V3 			--> 	CH_PD		(PIN 3)
 3V3 			--> 	VCC		(PIN 8)
@@ -25,5 +25,5 @@ directa.
 Arduino 	TX1 (PIN D19)	-->	Entrada divisor de tensión.
 ESP8266-07	RXD (PIN 15)	-->	Después de la primer resistencia contando desde la entrada.
 
-Arduino	GND			-->	A la salida de la última resistencia.
+Arduino		GND		-->	A la salida de la última resistencia.
 ESP8266-07	GND (PIN 9)	-->	A la salida de la última resistencia.
