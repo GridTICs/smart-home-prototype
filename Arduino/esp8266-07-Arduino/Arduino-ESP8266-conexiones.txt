@@ -4,17 +4,26 @@ Arduino Mega		ESP8266-07
 3V3 			--> 	VCC		(PIN 8)
 GND 			--> 	GND		(PIN 9)
 GND 			--> 	GPIO_15	(PIN 10)
-RX1 (PIN D18)	-->	TXD		(PIN 16)
+RX1 (PIN D18)		-->	TXD		(PIN 16)
 
 -----------------------------------------------------------------
 -----------------------------------------------------------------
 
 Divisor de Tensión
 
-Debido a que la tensión de salida de la placa Arduino es de 5 volts y la maxima tensión que soporta la placa ESP8266-07 es de 3,6 volts se debio realizar un divisor de tension. Este se realizó con tres resistencias de igual valor (10 kilo ohm). En el caso de la conexión entre la salida de la placa ESP8266-07 y el Arduino no es necesario realizar alguna modificación en la conexión porque la minima tensión para un valor alto que acepta la placa arduino esta por debajo de los 3 volt. Por lo que para la transmision desde la placa ESP8266-07 hacia el Arduino es directa.
+Debido a que la tensión de salida de la placa Arduino es de 5
+volts y la maxima tensión que soporta la placa ESP8266-07 es de
+3,6 volts se debio realizar un divisor de tension. Este se
+realizó con tres resistencias de igual valor (10 kilo ohm). En el
+caso de la conexión entre la salida de la placa ESP8266-07 y el
+Arduino no es necesario realizar alguna modificación en la
+conexión porque la minima tensión para un valor alto que acepta
+la placa arduino esta por debajo de los 3 volt. Por lo que para
+la transmision desde la placa ESP8266-07 hacia el Arduino es
+directa.
 
 Arduino 	TX1 (PIN D19)	-->	Entrada divisor de tensión.
-ESP8266-07	RXD (PIN 15)	-->	Después de la primer resistencia 						contando desde la entrada.
+ESP8266-07	RXD (PIN 15)	-->	Después de la primer resistencia contando desde la entrada.
 
-Arduino	GND			-->	A la salida de la última 								resistencia.
-ESP8266-07	GND (PIN 9)	-->	A la salida de la última 								resistencia.
+Arduino	GND			-->	A la salida de la última resistencia.
+ESP8266-07	GND (PIN 9)	-->	A la salida de la última resistencia.
