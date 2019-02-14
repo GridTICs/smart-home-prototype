@@ -9,7 +9,7 @@
 #define port 80
 
 #define DEBUG 0
-#define DEBUG_RED 0
+#define DEBUG_RED 1
 
 Adafruit_SHT31 sht31 = Adafruit_SHT31();
 
@@ -28,7 +28,7 @@ String writeAPIKey =  THINGSPEAK_WRITE_API_KEY;
 String SSID = AP_1;
 String PASS = AP_1_PASS;
 
-const int updateThingSpeakInterval = 900 * 1000; // Time interval in milliseconds to update ThingSpeak (number of seconds * 1000 = interval)
+long updateThingSpeakInterval = 900000; // Time interval in milliseconds to update ThingSpeak (number of seconds * 1000 = interval)
 
 long lastConnectionTime = 0;
 int failedCounter = 0;
@@ -161,6 +161,7 @@ void loop() {
     if (DEBUG_RED) {
     mySerialPrintDataL ("Valor lastConnectionTime luego Update ", lastConnectionTime);
     mySerialPrintDataL ("Valor millis luego Update ", millis());
+    mySerialPrintDataL ("Valor UpdateThingSpeakInterval ", updateThingSpeakInterval);
     long diferencia = millis() - lastConnectionTime;
     mySerialPrintDataL ("Valor diferencia luego Update ", diferencia);
   } 
@@ -233,7 +234,7 @@ void connectToThingSpeak(){
      failedCounter++;
      Serial.println("Connection to ThingSpeak Failed ("+String(failedCounter, DEC)+")");
      Serial.println();
-     lastConnectionTime = millis();
+//     lastConnectionTime = millis();
   }
 }
 
