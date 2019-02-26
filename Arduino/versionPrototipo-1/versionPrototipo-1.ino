@@ -3,8 +3,6 @@
 #include <SPI.h>
 #include <Ethernet.h>
 
-#include <Arduino.h>
-
 #include "Adafruit_SHT31.h"
 #include "credentials.h"
 
@@ -28,7 +26,7 @@ String writeAPIKey =  THINGSPEAK_WRITE_API_KEY;
 byte mac[] = { 0xF0, 0x5A, 0x09, 0x58, 0x56, 0x8E };
 byte thingSpeakAddress[] = {184, 106, 153, 149};                         //ip address of server.
 int port = 80 ;// a traves de proxy utn IP 192.168.16.8 puerto 8080
-const int updateThingSpeakInterval = 30 * 1000; // Time interval in milliseconds to update ThingSpeak (number of seconds * 1000 = interval)
+const int updateThingSpeakInterval = 30000; // Time interval in milliseconds to update ThingSpeak (number of seconds * 1000 = interval)
 
 IPAddress ip(192,168,1,44);
 
