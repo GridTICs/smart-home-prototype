@@ -2,7 +2,6 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <SPI.h>
-#include <Arduino.h>
 #include "Adafruit_SHT31.h"
 
 #define thingSpeakAddress "184.106.153.149"  //  "192.168.1.33"
