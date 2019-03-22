@@ -423,7 +423,6 @@ byte BH1750_Read(int address) {
 void getData() {
   temperature = sht31.readTemperature();
   humidity = sht31.readHumidity();
-  
   if (!isnan(temperature)) {  // check if 'is not a number'
   } else { 
     Serial.println("Failed to read temperature");
