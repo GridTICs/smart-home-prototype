@@ -326,11 +326,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
     ledsState (ledNumber);
     Serial.println("Led Rojo");
   }
+  
   if (!strcmp (stringPayload, toggleYellow )) {
     ledNumber = 2;
     ledsState (ledNumber);
     Serial.println("Led Amarillo");
   }
+  
   if (!strcmp (stringPayload, toggleGreen )) {
     ledNumber = 3;
     ledsState (ledNumber);
@@ -350,6 +352,7 @@ void ledsState (int ledToggle) {
       digitalWrite(ledPinRed, HIGH);
     }
   }
+  
   if (ledToggle == 2) {
     if (booleanYellowLedState == true) {
       yellowLedState = "false";
@@ -361,6 +364,7 @@ void ledsState (int ledToggle) {
       digitalWrite(ledPinYellow, HIGH);
     }
   }
+  
   if (ledToggle == 3) {
     if (booleanGreenLedState == true) {
       greenLedState = "false";
