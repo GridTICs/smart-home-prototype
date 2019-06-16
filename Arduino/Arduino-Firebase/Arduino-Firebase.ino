@@ -19,6 +19,7 @@
 
 #include <ESP8266WiFi.h>
 #include <FirebaseArduino.h>
+#include <DHT.h>
 #include "credentials.h"
 
 // Set these to run example.
@@ -27,8 +28,13 @@
 #define WIFI_SSID AP_1
 #define WIFI_PASSWORD AP_1_PASS      
 
-float temperatura;
+#define DHTTYPE DHT11       // DHT 11
 
+uint8_t DHTPin = D8;        // DHT Sensor
+DHT dht(DHTPin, DHTTYPE);   // Initialize DHT sensor.
+
+float temperature;
+float humidity;
 void setup() {
   Serial.begin(9600);
 
@@ -60,16 +66,25 @@ void loop() {
     digitalWrite(2, HIGH);
   }
   // set value
-  temperatura = 45;
-  Firebase.setFloat("number", temperatura);
+  getData();
+  Firebase.setFloat("Temperature", temperature);
   // handle error
   if (Firebase.failed()) {
-      Serial.print("setting /number failed:");
+      Serial.print("setting / Temperature failed:");
       Serial.println(Firebase.error());  
       return;
   }
-  delay(1000);
   
+  delay(1000);
+  Firebase.setFloat("Humidity", humidity);
+  // handle error
+  if (Firebase.failed()) {
+      Serial.print("setting / Humidity failed:");
+      Serial.println(Firebase.error());  
+      return;
+  }
+  
+  delay(1000);
   // update value
   Firebase.setFloat("number", 43.0);
   // handle error
@@ -120,4 +135,24 @@ void loop() {
   Serial.print("pushed: /logs/");
   Serial.println(name);
   delay(1000);
+}
+
+void getData() {
+  temperature = dht.readTemperature();                   // Gets the values of the temperature
+  humidity = dht.readHumidity();                         // Gets the values of the humidity
+  if (!isnan(temperature)) {                             // check if 'is not a number'
+  } else { 
+    Serial.println("Failed to read temperature");
+    temperature = -1;
+  }
+  
+  if (!isnan(humidity)) {                                // check if 'is not a number'
+  } else { 
+    Serial.println("Failed to read humidity");
+    humidity = -1;
+  }
+  
+//  potentiometerValue = analogRead(analogPin);            // read the input pin
+//  analogWrite(ledPinWhite, potentiometerValue / 4);      // analogRead values go from 0 to 1023, analogWrite values from 0 to 255
+
 }
