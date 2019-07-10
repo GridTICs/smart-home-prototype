@@ -19,7 +19,7 @@
 #define DEBUG_RED 0
 
 // Insert your FQDN of your MQTT Broker
-#define MQTT_SERVER "a2sq3y7mdrjtom.iot.us-east-1.amazonaws.com"
+#define MQTT_SERVER "test.mosquitto.org"
 const char* mqtt_server = MQTT_SERVER;
 
 // WiFi Credentials
@@ -31,8 +31,8 @@ const char* password = AP_1_PASS;
 const char* fingerprint = MY_FINGERPRINT;
                            
 // Topic
-char* outTopic = "3e873641";
-char* inTopic = "a152175c";
+char* outTopic = "arielOut";
+char* inTopic = "arielIn";
 String clientName;
 
 char jsonStr[200];
@@ -46,8 +46,7 @@ unsigned long startMills;
 WiFiClientSecure wifiClient;
 PubSubClient client(mqtt_server, 8883, wifiClient);
 
-int ledPinRed = 14;     // LED connected to D5 but It is GPIO14
-int ledPinYellow = 12;  // D6 - GPIO12 
+int ledPinRed = 12;     // LED connected to D6 but It is GPIO12
 int ledPinGreen = 13;   // D7 - GPIO13
 
 #define DHTTYPE DHT11       // DHT 11
@@ -59,18 +58,10 @@ float temperature;
 float humidity;
 
 String redLedState = "false";
-String yellowLedState = "false";
 String greenLedState = "false";
 
 boolean booleanRedLedState = false;
-boolean booleanYellowLedState = false;
 boolean booleanGreenLedState = false;
-
-int analogPin = analogRead(A0);   // potentiometer connected to analog pin 10
-int potentiometerValue = 0;       // variable to store the read value
-
-byte buff[2];
-
 
 void verifytls() {
   // Use WiFiClientSecure class to create TLS connection
@@ -94,37 +85,7 @@ void loadcerts() {
     return;
   }
   // Load client certificate file from SPIFFS
-  File cert = SPIFFS.open("/arduino.certificate.pem", "r"); //replace esp.der with your uploaded file name
-  if (!cert) {
-    Serial.println("Failed to open cert file");
-  } else {
-    Serial.println("Success to open cert file");
-  }
- 
-  delay(1000);
-  // Set client certificate
-  if (wifiClient.loadCertificate(cert)) {
-    Serial.println("cert loaded");
-  } else {
-    Serial.println("cert not loaded");
-  }
- // Load client private key file from SPIFFS
-  File private_key = SPIFFS.open("/arduino.private-key.txt", "r"); //replace espkey.der with your uploaded file name
-  if (!private_key) {
-    Serial.println("Failed to open private cert file");
-  } else {
-    Serial.println("Success to open private cert file");
-  }
-  
-  delay(1000);
-  // Set client private key
-  if (wifiClient.loadPrivateKey(private_key)) {
-    Serial.println("private key loaded");
-  } else {
-    Serial.println("private key not loaded");
-  }
-  // Load CA file from SPIFFS
-  File ca = SPIFFS.open("/rootCA.pem", "r"); //replace ca.der with your uploaded file name
+  File ca = SPIFFS.open("/mosquitto.org.crt", "r"); //replace ca.der with your uploaded file name
   if (!ca) {
     Serial.println("Failed to open ca ");
   } else {
@@ -233,7 +194,6 @@ void setup() {
   dht.begin();
   pinMode(ledPinRed, OUTPUT);   // sets the pin as output
   pinMode(ledPinGreen, OUTPUT);
-  pinMode(ledPinYellow, OUTPUT);
   client.setCallback(callback);
 }
 
@@ -302,8 +262,7 @@ String macToStr(const uint8_t* mac) {
 
 void callback(char* topic, byte* payload, unsigned int length) {
   const char* toggleRed    = "{\"command\":\"TOGGLE-RELAY\",\"relayIdx\":1}";
-  const char* toggleYellow = "{\"command\":\"TOGGLE-RELAY\",\"relayIdx\":2}";
-  const char* toggleGreen  = "{\"command\":\"TOGGLE-RELAY\",\"relayIdx\":3}";
+  const char* toggleGreen  = "{\"command\":\"TOGGLE-RELAY\",\"relayIdx\":2}";
   char charPayload[39];
   int ledNumber;
   Serial.print("Message arrived [");
@@ -323,14 +282,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
     Serial.println("Led Rojo");
   }
   
-  if (!strcmp (stringPayload, toggleYellow )) {
+  if (!strcmp (stringPayload, toggleGreen)) {
     ledNumber = 2;
-    ledsState (ledNumber);
-    Serial.println("Led Amarillo");
-  }
-  
-  if (!strcmp (stringPayload, toggleGreen )) {
-    ledNumber = 3;
     ledsState (ledNumber);
     Serial.println("Led Verde");
   }
@@ -350,18 +303,6 @@ void ledsState (int ledToggle) {
   }
   
   if (ledToggle == 2) {
-    if (booleanYellowLedState == true) {
-      yellowLedState = "false";
-      booleanYellowLedState = false;
-      digitalWrite(ledPinYellow, LOW);
-    } else {
-      yellowLedState = "true";
-      booleanYellowLedState = true;
-      digitalWrite(ledPinYellow, HIGH);
-    }
-  }
-  
-  if (ledToggle == 3) {
     if (booleanGreenLedState == true) {
       greenLedState = "false";
       booleanGreenLedState = false;
@@ -380,9 +321,6 @@ String buildJson(float temperatura, float humedad) {
   data+=redLedState;
   data+=",";
   data+="\"bulb2State\":";
-  data+=yellowLedState;
-  data+=",";
-  data+="\"bulb3State\":";
   data+=greenLedState;
   data+=",";
   data+="\"temp\":";
@@ -391,8 +329,6 @@ String buildJson(float temperatura, float humedad) {
   data+="\"hum\":";
   data+=humedad;
   data+=",";
-  data+="\"lux\":";
-  data+="45";
   data+="}";
   return data;
 }
@@ -411,8 +347,4 @@ void getData() {
     Serial.println("Failed to read humidity");
     humidity = -1;
   }
-  
-//  potentiometerValue = analogRead(analogPin);            // read the input pin
-//  analogWrite(ledPinWhite, potentiometerValue / 4);      // analogRead values go from 0 to 1023, analogWrite values from 0 to 255
-
 }
